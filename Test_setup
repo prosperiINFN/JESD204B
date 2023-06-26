@@ -1,0 +1,26 @@
+
+
+Progetto JESD204B_SYNC_GTX_ONLY_TEST.xpr
+
+  Test Setup :
+
+    1) Accendere scheda ADC ADS42JB69EVM
+    2) Programmarla tramite GUI, configurandola inizialmente con il file salvato ADS42JB69_EVM_LMF421_250M.cfg : line rate 2.5GHz, Device_clk = Sampling clock = mgt_ref_clk = 250MHz, L=4 , M=2, F=1
+    3) Resettare la scheda ADC tramite pulsante sul PCB
+    4) Dalla finestra ADS42JBXX cambiare i seguenti settaggi :
+                    a) Subclass --> 0
+                    b) Tick Ch B power down
+    5) Accendere la scheda Genesys
+    6) Programmare l'FPGA con il .bit e .ltx presenti nell'archivio
+    7) Verificare che dal VIO il reset sia basso, sync_vio sia basso, i reset_done dei canali siano 1, i vari lock delle pll siano 1.
+    8) Impostare il trigger degli ILA su transizione 0->1 di rx_sync
+    9) Mettere sync_vio alto
+    10) Guardare contenuto campioni ILA
+
+  Verificato : 
+
+    1) BCBC ricevuto in caso di rx_sync alto
+
+  Da Verificare:
+
+    2) Controllare che ciò che viene ricevuto dopo BCBC sia una corretta ILAS (Vedi info datasheet ADS42JB69)

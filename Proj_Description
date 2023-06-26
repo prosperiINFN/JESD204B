@@ -1,0 +1,18 @@
+
+
+Progetto JESD204B_SYNC_GTX_ONLY_TEST.xpr
+
+  Descrizione :
+
+    Il top del progetto instanzia un GTX a due canali in ricezione con decodifica 8b/10b a 2.5 Gb/s, una FSM che genera impulsi di SYNC~(Nel progetto rx_sync) da inviare alla scheda ADC a partire da un segnale VIO (sync_vio) e blocchi di monitoring come VIO ed ILA.
+
+    Il segnale sync_vio del VIO viene messo a 1 se vogliamo che il trasmettitore JESD invii alla FPGA il CGS, ovvero la sequenza fissa 0xBCBC in modo da lockare con il ricevitore. Mettendo sync_vio a 1 una FSM genera un impulso di rx_sync (segnale che va effettivamente alla scheda ADC tramite due pin di uscita differenziali) lungo un certo numero di cicli di device_clk (in questo caso 250Mhz da configurazione). Dopo tale intervallo di tempo, la FSM rimette il segnale rx_sync a 0 indipendentemente dal fatto che sync_vio sia ancora alto o meno. La FSM si resetta quando sync_vio viene rimesso basso.
+
+    Se il segnale rx_sync mandato al trasmettitore JESD è alto, il GTX riceve 0xBCBC (VERIFICATO triggerando l'ILA su rx_sync che transisce da 0 a 1).
+
+    Quando il segnale rx_sync è rimesso basso dalla FSM il trasmettitore JESD dovrebbe mandare L'ILAS (Initial lane alignment sequence - vedi datasheet ADS42JB69 per info) --> DA VERIFICARE con gli ILA
+
+    Il VIO contiene come porte di uscita un reset attivo alto, il sync_vio e i bit gt_pol0 e gt_pol1 per il controllo della polarità dei dati in ingresso al GTX.
+    Il VIO contiene un certo numero di porte d'ingresso che monitorano i vari lock e reset_done dei transciever e di altre pll.
+
+    Gli ILA monitorano i dati ricevuti dai due canali GTX (clk = mgt_rx_usr_clk = 62.5MHz)
